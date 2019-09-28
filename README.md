@@ -6,7 +6,7 @@
   - returns - String
 
 ```js
-const {  totpKey } = require('@davalapar/crypto');
+const { totpKey } = require('@davalapar/crypto');
 const key = totpKey();
 ```
 
@@ -73,3 +73,7 @@ const isCodeValid = totpVerify('sha1', key, true, code);
 - https://en.wikipedia.org/wiki/Time-based_One-time_Password_algorithm
 - https://pthree.org/2014/04/15/time-based-one-time-passwords-how-it-works/
 - https://github.com/guyht/notp/
+
+#### License
+
+MIT | @davalapar
