@@ -1,21 +1,75 @@
 ## @davalapar/crypto
 
+#### Base32-encoded key
+
+- totpKey - returns a Base32-encoded 16-byte/128-bit key
+  - returns - String
+
 ```js
-const { hotp, totp, totpValidate, totpCreateSecret } = require('@davalapar/crypto');
-
-const secret = totpCreateSecret();
-
- // counter-based otp
-const hotpCode = hotp('sha1', secret, 1);
-
-// time-based otp
-const windowCounter = Math.floor(Math.round(Date.now() / 1000) / 30);
-const totpCode = totp('sha1', secret, windowCounter);
-totpValidate('sha1', secret, totpCode);
+const {  totpKey } = require('@davalapar/crypto');
+const key = totpKey();
 ```
 
-Reference links:
+#### HMAC-based one-time password (HOTP)
 
-- https://github.com/guyht/notp/
+- hotpCode - returns a code from algo, key, and counter
+  - algo - String
+  - key - String
+  - isBase32Key - Boolean
+  - counter - Integer
+  - callStack - String, Optional
+  - returns - String
+
+```js
+const { hotpCode, totpKey } = require('@davalapar/crypto');
+const key = totpKey();
+const code = hotpCode('sha1', key, true, 1);
+```
+
+#### Time-based one-time password (TOTP)
+
+- totpCode - returns a code from algo, key, and timeCounter; where timeCounter is a counter value based on the thirty-second windows of the unix time
+  - algo - String
+  - key - String
+  - isBase32Key - Boolean
+  - timeCounter - Integer
+  - callStack - String, Optional
+  - returns - String
+- totpVerify - returns a validation result of code from algo, key, code, and tolerance; where tolerance is the amount of previous windows to be also considered as valid
+  - algo - String
+  - key - String
+  - isBase32Key - Boolean
+  - code - String
+  - tolerance - Integer, Optional
+  - callStack - String, Optional
+  - returns - Boolean
+
+```js
+const { totpCode, totpVerify, totpKey } = require('@davalapar/crypto');
+const key = totpKey();
+const timeCounter = Math.floor(Math.round(Date.now() / 1000) / 30);
+const code = totpCode('sha1', key, true, timeCounter);
+const isCodeValid = totpVerify('sha1', key, true, code);
+```
+
+#### Accepted algorithms for HOTP & TOTP
+
+- sha1
+- sha224
+- sha256
+- sha3-224
+- sha3-256
+- sha3-384
+- sha3-512
+- sha384
+- sha512
+- sha512-224
+- sha512-256
+
+#### References
+
 - https://en.wikipedia.org/wiki/Google_Authenticator
+- https://en.wikipedia.org/wiki/HMAC-based_One-time_Password_algorithm
+- https://en.wikipedia.org/wiki/Time-based_One-time_Password_algorithm
 - https://pthree.org/2014/04/15/time-based-one-time-passwords-how-it-works/
+- https://github.com/guyht/notp/

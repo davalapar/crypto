@@ -1,30 +1,34 @@
 /* eslint-disable no-console */
 
-const { totpCreateSecret, totp, totpValidate } = require('./index');
+const {
+  totpCode,
+  totpVerify,
+  totpKey,
+} = require('./index');
 
-const secret = totpCreateSecret();
-console.log({ secret });
+const key = totpKey();
+console.log({ key });
 console.log();
 
-const windowCounter = Math.floor(Math.round(Date.now() / 1000) / 30);
-const code = totp('sha1', secret, windowCounter);
+const timeCounter = Math.floor(Math.round(Date.now() / 1000) / 30);
+const code = totpCode('sha1', key, true, timeCounter);
 
 console.log('Test case 1: Code within 30s are valid.');
-console.log({ code, windowCounter });
-console.log(`Match? ${totpValidate('sha1', secret, code)}`);
+console.log({ code, timeCounter });
+console.log(`Match? ${totpVerify('sha1', key, true, code)}`);
 console.log();
 
-const windowCounter2 = windowCounter - 90;
-const code2 = totp('sha1', secret, windowCounter2);
+const timeCounter2 = timeCounter - 90;
+const code2 = totpCode('sha1', key, true, timeCounter2);
 console.log('Test case 2: Code within 90s are valid.');
-console.log({ code2, windowCounter2 });
-console.log(`Match? ${totpValidate('sha1', secret, code2, 3)}`);
+console.log({ code2, timeCounter2 });
+console.log(`Match? ${totpVerify('sha1', key, true, code2, 3)}`);
 console.log();
 
-const windowCounter3 = Math.floor(Math.round(Date.now() / 1000) / 30);
-const code3 = totp('sha256', secret, windowCounter);
+const timeCounter3 = Math.floor(Math.round(Date.now() / 1000) / 30);
+const code3 = totpCode('sha256', key, true, timeCounter);
 
 console.log('Test case 3: SHA256 support.');
-console.log({ code3, windowCounter3 });
-console.log(`Match? ${totpValidate('sha256', secret, code3)}`);
+console.log({ code3, timeCounter3 });
+console.log(`Match? ${totpVerify('sha256', key, true, code3)}`);
 console.log();
