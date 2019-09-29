@@ -162,7 +162,7 @@ const scryptKey = (() => {
   return scryptKeyFn;
 })();
 
-const scryptSalt = () => crypto.randomBytes(64);
+const scryptSalt = () => crypto.randomBytes(32);
 
 module.exports = {
   hotpCode,

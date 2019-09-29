@@ -72,7 +72,7 @@ const isCodeValid = totpVerify('sha1', key, true, code);
   - password - String
   - salt - Buffer
   - returns - Promise, Buffer
-- scryptSalt - returns a 64-byte / 512-bit salt
+- scryptSalt - returns a 32-byte / 256-bit salt
   - returns - Buffer
 
 ```js
@@ -94,7 +94,8 @@ console.log('key:', derivedKey.toString('hex'));
   - https://en.wikipedia.org/wiki/Time-based_One-time_Password_algorithm
   - https://pthree.org/2014/04/15/time-based-one-time-passwords-how-it-works/
   - https://github.com/guyht/notp/
-- SCRYPT
+- Scrypt
+  - https://en.wikipedia.org/wiki/Scrypt
   - https://github.com/Tarsnap/scrypt/issues/19#issuecomment-154765518
   - https://blog.filippo.io/the-scrypt-parameters/
 
