@@ -72,7 +72,6 @@ const isCodeValid = totpVerify('sha1', key, true, code);
   - password - String
   - salt - Buffer
   - returns - Promise, Buffer
-
 - scryptSalt - returns a 64-byte / 512-bit salt
   - returns - Buffer
 
