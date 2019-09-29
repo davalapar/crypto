@@ -4,6 +4,8 @@ const {
   totpCode,
   totpVerify,
   totpKey,
+  scryptKey,
+  scryptSalt,
 } = require('./index');
 
 const key = totpKey();
@@ -32,3 +34,12 @@ console.log('Test case 3: SHA256 support.');
 console.log({ code3, timeCounter3 });
 console.log(`Match? ${totpVerify('sha256', key, true, code3)}`);
 console.log();
+
+(async () => {
+  const salt = scryptSalt();
+  const derivedKey = await scryptKey('asd', salt);
+  console.log('salt:', salt.toString('hex'));
+  console.log('key:', derivedKey.toString('hex'));
+  const derivedKey2 = await scryptKey('asd', salt);
+  console.log('key:', derivedKey2.toString('hex'));
+})();

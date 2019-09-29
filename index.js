@@ -1,9 +1,11 @@
 /* eslint-disable no-console, no-bitwise */
 
+const util = require('util');
 const crypto = require('crypto');
 const base32 = require('hi-base32');
+const prettyBytes = require('pretty-bytes');
 
-const algos = [
+const hotpAlgos = [
   'sha1',
   'sha224',
   'sha256',
@@ -44,7 +46,7 @@ const prettyError = (methodName, callStack, wrappedError, parameters) => {
 
 const hotpCode = (algo, key, isBase32Key, counter, callStack) => {
   try {
-    if (algos.includes(algo) === false) {
+    if (hotpAlgos.includes(algo) === false) {
       throw Error('Invalid "algo" value.');
     }
     if (typeof key !== 'string' || key === '') {
@@ -82,7 +84,10 @@ const hotpCode = (algo, key, isBase32Key, counter, callStack) => {
     return code;
   } catch (e) {
     prettyError('hotpCode', callStack, e, {
-      algo, key, isBase32Key, counter,
+      algo,
+      key,
+      isBase32Key,
+      counter,
     });
     throw e;
   }
@@ -93,7 +98,10 @@ const totpCode = (algo, key, isBase32Key, timeCounter, callStack) => {
     return hotpCode(algo, key, isBase32Key, timeCounter, 'totpCode');
   } catch (e) {
     prettyError('totpCode', callStack, e, {
-      algo, key, isBase32Key, timeCounter,
+      algo,
+      key,
+      isBase32Key,
+      timeCounter,
     });
     throw e;
   }
@@ -122,7 +130,11 @@ const totpVerify = (algo, key, isBase32Key, code, tolerance, callStack) => {
     return false;
   } catch (e) {
     prettyError('totpVerify', callStack, e, {
-      algo, key, isBase32Key, code, tolerance,
+      algo,
+      key,
+      isBase32Key,
+      code,
+      tolerance,
     });
     throw e;
   }
@@ -130,11 +142,35 @@ const totpVerify = (algo, key, isBase32Key, code, tolerance, callStack) => {
 
 const totpKey = () => base32.encode(crypto.randomBytes(16)).replace(/=/g, '');
 
+const scryptKey = (() => {
+  const scryptAsync = util.promisify(crypto.scrypt);
+  const scryptDerivedKeyLength = 64;
+  const scryptOptions = {
+    N: (2 ** 15),
+    r: 8,
+    p: 1,
+    maxmem: 128 * (2 ** 16) * 8,
+  };
+  const scryptKeyFn = (password, salt) => scryptAsync(
+    password,
+    salt,
+    scryptDerivedKeyLength,
+    scryptOptions,
+  );
+  scryptKeyFn.estimatedUsage = 128 * scryptOptions.N * scryptOptions.r;
+  scryptKeyFn.estimatedUsagePretty = prettyBytes(128 * scryptOptions.N * scryptOptions.r);
+  return scryptKeyFn;
+})();
+
+const scryptSalt = () => crypto.randomBytes(64);
+
 module.exports = {
   hotpCode,
   totpCode,
   totpVerify,
   totpKey,
+  scryptKey,
+  scryptSalt,
 };
 
 

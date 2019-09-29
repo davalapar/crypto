@@ -2,7 +2,7 @@
 
 #### Base32-encoded key
 
-- totpKey - returns a Base32-encoded 16-byte/128-bit key
+- totpKey - returns a Base32-encoded 16-byte / 128-bit key
   - returns - String
 
 ```js
@@ -66,13 +66,38 @@ const isCodeValid = totpVerify('sha1', key, true, code);
 - sha512-224
 - sha512-256
 
+#### Scrypt
+
+- scryptKey - returns a derived key
+  - password - String
+  - salt - Buffer
+  - returns - Promise, Buffer
+
+- scryptSalt - returns a 64-byte / 512-bit salt
+  - returns - Buffer
+
+```js
+const { scryptKey, scryptSalt } = require('./index');
+const salt = scryptSalt();
+const derivedKey = await scryptKey('password', salt);
+console.log('salt:', salt.toString('hex'));
+console.log('key:', derivedKey.toString('hex'));
+```
+
 #### References
 
-- https://en.wikipedia.org/wiki/Google_Authenticator
-- https://en.wikipedia.org/wiki/HMAC-based_One-time_Password_algorithm
-- https://en.wikipedia.org/wiki/Time-based_One-time_Password_algorithm
-- https://pthree.org/2014/04/15/time-based-one-time-passwords-how-it-works/
-- https://github.com/guyht/notp/
+- All
+  - https://nodejs.org/api/crypto.html
+  - https://latacora.micro.blog/2018/04/03/cryptographic-right-answers.html
+- HOTP, TOTP
+  - https://en.wikipedia.org/wiki/Google_Authenticator
+  - https://en.wikipedia.org/wiki/HMAC-based_One-time_Password_algorithm
+  - https://en.wikipedia.org/wiki/Time-based_One-time_Password_algorithm
+  - https://pthree.org/2014/04/15/time-based-one-time-passwords-how-it-works/
+  - https://github.com/guyht/notp/
+- SCRYPT
+  - https://github.com/Tarsnap/scrypt/issues/19#issuecomment-154765518
+  - https://blog.filippo.io/the-scrypt-parameters/
 
 #### License
 
