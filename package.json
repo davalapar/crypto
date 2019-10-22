@@ -1,4 +1,11 @@
 {
+  "name": "@davalapar/crypto",
+  "version": "0.0.69",
+  "description": "crypto utils",
+  "main": "index.js",
+  "repository": "git@github.com:davalapar/database.git",
+  "author": "davalapar <davalapar@gmail.com>",
+  "license": "MIT",
   "devDependencies": {
     "eslint": "6.3.0",
     "eslint-config-airbnb": "18.0.1",
