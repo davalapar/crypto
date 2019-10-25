@@ -1,6 +1,20 @@
 ## @davalapar/crypto
 
-#### Base32-encoded key
+#### randomBytes
+
+- uses /dev/urandom on mac & linux
+- randomBytes.sync - returns a length-based random bytes
+  - returns - String
+- randomBytes.async - returns a length-based random bytes
+  - returns - Promise of String
+
+```js
+const { randomBytes } = require('@davalapar/crypto');
+console.log(randomBytes.sync(32));
+randomBytes.async(32).then(console.log);
+```
+
+#### Base32-encoded TOTP key
 
 - totpKey - returns a Base32-encoded 16-byte / 128-bit key
   - returns - String

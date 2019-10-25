@@ -1,9 +1,44 @@
 /* eslint-disable no-console, no-bitwise */
 
+const os = require('os');
+const fs = require('fs');
 const util = require('util');
 const crypto = require('crypto');
 const base32 = require('hi-base32');
 const prettyBytes = require('pretty-bytes');
+
+const randomBytes = (() => {
+  switch (os.platform()) {
+    case 'linux':
+    case 'darwin': {
+      const fd = fs.openSync('/dev/urandom');
+      return {
+        sync: (length) => {
+          const buffer = Buffer.allocUnsafe(length);
+          fs.readSync(fd, buffer, 0, length, 0);
+          return buffer;
+        },
+        async: (length) => new Promise((resolve, reject) => {
+          const buffer = Buffer.allocUnsafe(length);
+          fs.read(fd, buffer, 0, length, 0, (err) => {
+            if (err !== null) {
+              reject(err);
+              return;
+            }
+            resolve(buffer);
+          });
+        }),
+        close: () => fs.closeSync(fd),
+      };
+    }
+    default: {
+      return {
+        sync: crypto.randomBytes,
+        async: util.promisify(crypto.randomBytes),
+      };
+    }
+  }
+})();
 
 const hotpAlgos = [
   'sha1',
@@ -143,28 +178,31 @@ const totpVerify = (algo, key, isBase32Key, code, tolerance, callStack) => {
 const totpKey = () => base32.encode(crypto.randomBytes(16)).replace(/=/g, '');
 
 const scryptKey = (() => {
-  const scryptAsync = util.promisify(crypto.scrypt);
-  const scryptDerivedKeyLength = 64;
-  const scryptOptions = {
+  const derivedKeyLength = 64;
+  const options = {
     N: (2 ** 15),
     r: 8,
     p: 1,
     maxmem: 128 * (2 ** 16) * 8,
   };
-  const scryptKeyFn = (password, salt) => scryptAsync(
-    password,
-    salt,
-    scryptDerivedKeyLength,
-    scryptOptions,
-  );
-  scryptKeyFn.estimatedUsage = 128 * scryptOptions.N * scryptOptions.r;
-  scryptKeyFn.estimatedUsagePretty = prettyBytes(128 * scryptOptions.N * scryptOptions.r);
+  const scryptKeyFn = (password, salt) => new Promise((resolve, reject) => {
+    crypto.scrypt(password, salt, derivedKeyLength, options, (err, derivedKey) => {
+      if (err !== null) {
+        reject(err);
+        return;
+      }
+      resolve(derivedKey);
+    });
+  });
+  scryptKeyFn.estimatedUsage = 128 * options.N * options.r;
+  scryptKeyFn.estimatedUsagePretty = prettyBytes(128 * options.N * options.r);
   return scryptKeyFn;
 })();
 
 const scryptSalt = () => crypto.randomBytes(32);
 
 module.exports = {
+  randomBytes,
   hotpCode,
   totpCode,
   totpVerify,

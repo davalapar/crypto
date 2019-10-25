@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 
 const {
+  randomBytes,
   totpCode,
   totpVerify,
   totpKey,
@@ -43,3 +44,8 @@ console.log();
   const derivedKey2 = await scryptKey('asd', salt);
   console.log('key:', derivedKey2.toString('hex'));
 })();
+
+setTimeout(() => {
+  console.log(randomBytes.sync(32).toString('hex'));
+  randomBytes.async(32).then((buffer) => console.log(buffer.toString('hex')));
+}, 1000);
