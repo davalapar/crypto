@@ -175,7 +175,7 @@ const totpVerify = (algo, key, isBase32Key, code, tolerance, callStack) => {
   }
 };
 
-const totpKey = () => base32.encode(crypto.randomBytes(16)).replace(/=/g, '');
+const hotpKey = () => base32.encode(crypto.randomBytes(16)).replace(/=/g, '');
 
 const scryptKey = (() => {
   const derivedKeyLength = 64;
@@ -206,7 +206,7 @@ module.exports = {
   hotpCode,
   totpCode,
   totpVerify,
-  totpKey,
+  hotpKey,
   scryptKey,
   scryptSalt,
 };

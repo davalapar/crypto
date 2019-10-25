@@ -4,12 +4,12 @@ const {
   randomBytes,
   totpCode,
   totpVerify,
-  totpKey,
+  hotpKey,
   scryptKey,
   scryptSalt,
 } = require('./index');
 
-const key = totpKey();
+const key = hotpKey();
 console.log({ key });
 console.log();
 

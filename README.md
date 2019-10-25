@@ -14,14 +14,14 @@ console.log(randomBytes.sync(32));
 randomBytes.async(32).then(console.log);
 ```
 
-#### Base32-encoded TOTP key
+#### Base32-encoded HOTP key
 
-- totpKey - returns a Base32-encoded 16-byte / 128-bit key
+- hotpKey - returns a Base32-encoded 16-byte / 128-bit key
   - returns - String
 
 ```js
-const { totpKey } = require('@davalapar/crypto');
-const key = totpKey();
+const { hotpKey } = require('@davalapar/crypto');
+const key = hotpKey();
 ```
 
 #### HMAC-based one-time password (HOTP)
@@ -35,8 +35,8 @@ const key = totpKey();
   - returns - String
 
 ```js
-const { hotpCode, totpKey } = require('@davalapar/crypto');
-const key = totpKey();
+const { hotpCode, hotpKey } = require('@davalapar/crypto');
+const key = hotpKey();
 const code = hotpCode('sha1', key, true, 1);
 ```
 
@@ -59,8 +59,8 @@ const code = hotpCode('sha1', key, true, 1);
   - returns - Boolean
 
 ```js
-const { totpCode, totpVerify, totpKey } = require('@davalapar/crypto');
-const key = totpKey();
+const { totpCode, totpVerify, hotpKey } = require('@davalapar/crypto');
+const key = hotpKey();
 const timeCounter = Math.floor(Math.round(Date.now() / 1000) / 30);
 const code = totpCode('sha1', key, true, timeCounter);
 const isCodeValid = totpVerify('sha1', key, true, code);
