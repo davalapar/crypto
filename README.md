@@ -1,5 +1,21 @@
 ## @davalapar/crypto
 
+#### Latacora 2018 Recommendations
+
+- https://latacora.micro.blog/2018/04/03/cryptographic-right-answers.html
+- Encrypting data: kms or xsalsa20+poly1305
+- Symmetric key length: 256-bit keys
+- Symmetric “signatures”: hmac
+- Hashing algorithm: sha-2, or sha-512/256
+- Random ID's: 256-bit random numbers, from `/dev/urandom`
+- Password handling: scrypt, argon2, bcrypt, or PBKDF2.
+- Asymmetric encryption: nacl/libsodium (box / crypto_box)
+- Asymmetric signatures: nacl or ed25519
+- Diffie-Hellman: nacl or curve25519
+- Website security: aws alb/elb or openssl w/ letsencrypt
+- Client-server application security: aws alb/elb or openssl w/ letsencrypt
+- Online backups: tarsnap
+
 #### randomBytes
 
 - uses /dev/urandom on mac & linux
